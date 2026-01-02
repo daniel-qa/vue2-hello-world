@@ -1,7 +1,7 @@
 <template>
   <div class="manager-container">
     <nav class="side-menu">
-      <h3>CCTV 地點清單</h3>
+      <h3>即時影像清單</h3>
       <div 
         v-for="item in sites" 
         :key="item.id"
@@ -9,16 +9,36 @@
         :class="{ active: selectedSite.id === item.id }"
         @click="selectedSite = item"
       >
+        <span class="type-tag">{{ item.type === 'hls' ? '交通' : '觀光' }}</span>
         {{ item.name }}
       </div>
     </nav>
 
     <main class="content-area">
-      <h2>正在收看：{{ selectedSite.name }}</h2>
+      <div class="header">
+        <h2>{{ selectedSite.name }}</h2>
+        <span class="status-live">LIVE</span>
+      </div>
       
-      <CCTVPlayer :videoUrl="selectedSite.url" />
+      <div class="player-wrapper">
+        <CCTVPlayer 
+          v-if="selectedSite.type === 'hls'" 
+          :videoUrl="selectedSite.url" 
+        />
+
+        <div v-else-if="selectedSite.type === 'youtube'" class="youtube-frame">
+          <iframe
+            :src="`https://www.youtube.com/embed/${selectedSite.videoId}?autoplay=1&mute=1`"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </div>
       
-      <p class="info">※ 影像來源：台北市政府即時交通資訊網</p>
+      <p class="footer-info">
+        數據來源：{{ selectedSite.type === 'hls' ? '台北市政府交通局' : 'YouTube 觀光局直播' }}
+      </p>
     </main>
   </div>
 </template>
@@ -32,24 +52,24 @@ export default {
   },
   data() {
     return {
-      // 這裡就是「寫死」的資料
       sites: [
         { 
           id: 1, 
-          name: "台北 101", 
+          name: "台北 101 (信義路口)", 
+          type: "hls",
           url: "https://jtmctrafficcctv5.gov.taipei/NVR/b3ab732e-915d-4f43-a4f5-3d8584816dde/live.m3u8" 
         },
         { 
           id: 2, 
-          name: "市民大道", 
-          url: "https://jtmctrafficcctv03.gov.taipei/NVR/68779836-9653-4375-9005-021966699a73/live.m3u8" 
+          name: "大溪老街 (即時影像)", 
+          type: "youtube",
+          videoId: "XUWjAsajKXg" // 從您提供的 iframe 中擷取的 ID
         }
       ],
       selectedSite: null
     };
   },
   created() {
-    // 預設選中第一個
     this.selectedSite = this.sites[0];
   }
 };
@@ -58,41 +78,82 @@ export default {
 <style scoped>
 .manager-container {
   display: flex;
-  gap: 30px;
-  max-width: 1200px;
-  margin: 0 auto;
+  height: 90vh;
+  gap: 20px;
   padding: 20px;
+  background: #f4f7f6;
 }
 
 .side-menu {
-  width: 200px;
-  text-align: left;
+  width: 260px;
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
 .menu-item {
-  padding: 10px;
-  margin: 5px 0;
-  border: 1px solid #ddd;
+  padding: 12px;
+  margin: 8px 0;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 8px;
+  transition: 0.3s;
+  border: 1px solid #eee;
+  display: flex;
+  align-items: center;
 }
 
-.menu-item:hover {
-  background-color: #f0f0f0;
-}
+.menu-item:hover { background: #f0fdf4; }
 
 .menu-item.active {
-  background-color: #42b983;
+  background: #42b983;
   color: white;
+  border-color: #42b983;
+}
+
+.type-tag {
+  font-size: 10px;
+  background: rgba(0,0,0,0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-right: 8px;
 }
 
 .content-area {
   flex: 1;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
-.info {
-  margin-top: 15px;
-  color: #666;
-  font-size: 0.9em;
+.player-wrapper {
+  width: 100%;
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.youtube-frame {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  height: 0;
+}
+
+.youtube-frame iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.status-live {
+  background: #ff4d4f;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-left: 10px;
 }
 </style>
