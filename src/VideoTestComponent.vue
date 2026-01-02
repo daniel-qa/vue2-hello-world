@@ -1,5 +1,12 @@
 <template>
   <div class="manager-container">
+    <!-- 背景音樂 - 頁面載入時自動播放 -->
+    <iframe
+      src="https://www.youtube.com/embed/bxlxilRls7g?autoplay=1&mute=0&controls=0&showinfo=0&modestbranding=1"
+      style="position: absolute; width: 1px; height: 1px; top: -9999px; left: -9999px;"
+      allow="autoplay; encrypted-media"
+    ></iframe>
+
     <nav class="side-menu">
       <h3>即時影像清單</h3>
       <div 
