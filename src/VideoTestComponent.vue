@@ -7,17 +7,22 @@
       allow="autoplay; encrypted-media"
     ></iframe>
 
-    <nav class="side-menu">
-      <h3>即時影像清單</h3>
-      <div 
-        v-for="item in sites" 
-        :key="item.id"
-        class="menu-item"
-        :class="{ active: selectedSite.id === item.id }"
-        @click="selectedSite = item"
-      >
-        <span class="type-tag">{{ item.type === 'hls' ? '交通' : '觀光' }}</span>
-        {{ item.name }}
+    <nav class="side-menu" :class="{ collapsed: isMenuCollapsed }">
+      <h3 @click="toggleMenu" class="menu-toggle-header">
+        <span v-show="!isMenuCollapsed">即時影像清單</span>
+        <span class="toggle-icon">{{ isMenuCollapsed ? '▶' : '◀' }}</span>
+      </h3>
+      <div v-show="!isMenuCollapsed" class="menu-items">
+        <div 
+          v-for="item in sites" 
+          :key="item.id"
+          class="menu-item"
+          :class="{ active: selectedSite.id === item.id }"
+          @click="selectedSite = item"
+        >
+          <span class="type-tag">{{ item.type === 'hls' ? '交通' : '觀光' }}</span>
+          {{ item.name }}
+        </div>
       </div>
     </nav>
 
@@ -73,11 +78,17 @@ export default {
           videoId: "XUWjAsajKXg" // 從您提供的 iframe 中擷取的 ID
         }
       ],
-      selectedSite: null
+      selectedSite: null,
+      isMenuCollapsed: false
     };
   },
   created() {
     this.selectedSite = this.sites[0];
+  },
+  methods: {
+    toggleMenu() {
+      this.isMenuCollapsed = !this.isMenuCollapsed;
+    }
   }
 };
 </script>
@@ -97,6 +108,42 @@ export default {
   padding: 15px;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  transition: width 0.3s ease;
+}
+
+.side-menu.collapsed {
+  width: 25px;
+  padding: 10px 5px;
+}
+
+.menu-toggle-header {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  font-size: 16px;
+  height: 30px;
+}
+
+.side-menu.collapsed .menu-toggle-header {
+  font-size: 12px;
+  justify-content: flex-end;
+}
+
+.toggle-icon {
+  font-size: 14px;
+  transition: transform 0.3s ease;
+  margin-left: 5px;
+}
+
+.side-menu.collapsed .toggle-icon {
+  margin-left: 0;
+}
+
+.menu-items {
+  transition: opacity 0.3s ease;
 }
 
 .menu-item {
@@ -162,5 +209,33 @@ export default {
   border-radius: 4px;
   font-size: 12px;
   margin-left: 10px;
+}
+
+/* 手機響應式設計 */
+@media (max-width: 768px) {
+  .manager-container {
+    flex-direction: column;
+    height: auto;
+    padding: 10px;
+    gap: 10px;
+  }
+  
+  .side-menu {
+    width: 100%;
+    order: 2;
+  }
+  
+  .side-menu.collapsed {
+    width: 100%;
+  }
+  
+  .content-area {
+    order: 1;
+    min-height: 300px;
+  }
+  
+  .player-wrapper {
+    height: 200px;
+  }
 }
 </style>
