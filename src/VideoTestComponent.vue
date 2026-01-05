@@ -20,7 +20,7 @@
           :class="{ active: selectedSite.id === item.id }"
           @click="selectedSite = item"
         >
-          <span class="type-tag">{{ item.type === 'hls' ? '交通' : '觀光' }}</span>
+          <span class="type-tag">{{ item.type === 'hls' ? '交通' : item.type === 'youtube' ? '觀光' : '景點' }}</span>
           {{ item.name }}
         </div>
       </div>
@@ -46,10 +46,14 @@
             allowfullscreen
           ></iframe>
         </div>
-      </div>
+
+              </div>
       
       <p class="footer-info">
-        數據來源：{{ selectedSite.type === 'hls' ? '台北市政府交通局' : 'YouTube 觀光局直播' }}
+        數據來源：{{ 
+          selectedSite.type === 'hls' ? '台北市政府交通局' : 
+          'YouTube 直播' 
+        }}
       </p>
     </main>
   </div>
@@ -76,6 +80,12 @@ export default {
           name: "大溪老街 (即時影像)", 
           type: "youtube",
           videoId: "XUWjAsajKXg" // 從您提供的 iframe 中擷取的 ID
+        },
+        { 
+          id: 3, 
+          name: "七星潭安檢所", 
+          type: "youtube",
+          videoId: "OQnwVN5lzsk"
         }
       ],
       selectedSite: null,
@@ -96,7 +106,7 @@ export default {
 <style scoped>
 .manager-container {
   display: flex;
-  height: 90vh;
+  min-height: 100vh;
   gap: 20px;
   padding: 20px;
   background: #f4f7f6;
@@ -190,8 +200,9 @@ export default {
 
 .youtube-frame {
   position: relative;
-  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-  height: 0;
+  width: 100%;
+  height: 80vh;
+  min-height: 500px;
 }
 
 .youtube-frame iframe {
@@ -201,6 +212,7 @@ export default {
   width: 100%;
   height: 100%;
 }
+
 
 .status-live {
   background: #ff4d4f;
@@ -215,7 +227,7 @@ export default {
 @media (max-width: 768px) {
   .manager-container {
     flex-direction: column;
-    height: auto;
+    min-height: auto;
     padding: 10px;
     gap: 10px;
   }
@@ -234,8 +246,9 @@ export default {
     min-height: 300px;
   }
   
-  .player-wrapper {
-    height: 200px;
+  .youtube-frame {
+    height: 60vh;
+    min-height: 300px;
   }
 }
 </style>
