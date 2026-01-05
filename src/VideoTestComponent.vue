@@ -86,6 +86,18 @@ export default {
           name: "七星潭安檢所", 
           type: "youtube",
           videoId: "OQnwVN5lzsk"
+        },
+        { 
+          id: 4, 
+          name: "旗津海水浴場", 
+          type: "youtube",
+          videoId: "ka7FV0sCvxQ"
+        },
+        { 
+          id: 5, 
+          name: "台東多良車站", 
+          type: "youtube",
+          videoId: "UCG1aXVO8H8"
         }
       ],
       selectedSite: null,
