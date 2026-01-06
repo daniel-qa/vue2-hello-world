@@ -116,6 +116,12 @@ export default {
           name: "墾丁山海漁港", 
           type: "youtube",
           videoId: "u_dXeSWRjlw"
+        },
+        { 
+          id: 7, 
+          name: "台東南橫埡口", 
+          type: "youtube",
+          videoId: "LSkq-wHMxQY"
         }
       ],
       selectedSite: null,
