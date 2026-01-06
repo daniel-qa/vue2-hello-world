@@ -110,6 +110,12 @@ export default {
           name: "台東多良車站", 
           type: "youtube",
           videoId: "UCG1aXVO8H8"
+        },
+        { 
+          id: 6, 
+          name: "墾丁山海漁港", 
+          type: "youtube",
+          videoId: "u_dXeSWRjlw"
         }
       ],
       selectedSite: null,
