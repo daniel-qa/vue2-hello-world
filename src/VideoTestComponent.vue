@@ -7,14 +7,26 @@
       allow="autoplay; encrypted-media"
     ></iframe>
 
-    <nav class="side-menu" :class="{ collapsed: isMenuCollapsed }">
+    <nav class="side-menu">
       <h3 @click="toggleMenu" class="menu-toggle-header">
         <span v-show="!isMenuCollapsed">即時影像清單</span>
         <span class="toggle-icon">{{ isMenuCollapsed ? '▶' : '◀' }}</span>
       </h3>
+      
+      <!-- 搜尋框 -->
+      <div v-show="!isMenuCollapsed" class="search-container">
+        <input 
+          type="text" 
+          v-model="searchQuery"
+          placeholder="搜尋地點..."
+          class="search-input"
+          @input="filterSites"
+        />
+        <div v-if="searchQuery" class="search-clear" @click="clearSearch">✕</div>
+      </div>
       <div v-show="!isMenuCollapsed" class="menu-items">
         <div 
-          v-for="item in sites" 
+          v-for="item in filteredSites" 
           :key="item.id"
           class="menu-item"
           :class="{ active: selectedSite.id === item.id }"
@@ -101,15 +113,35 @@ export default {
         }
       ],
       selectedSite: null,
-      isMenuCollapsed: false
+      isMenuCollapsed: false,
+      searchQuery: '',
+      filteredSites: []
     };
   },
   created() {
     this.selectedSite = this.sites[0];
+    this.filteredSites = this.sites;
   },
   methods: {
     toggleMenu() {
       this.isMenuCollapsed = !this.isMenuCollapsed;
+    },
+    filterSites() {
+      if (!this.searchQuery.trim()) {
+        this.filteredSites = this.sites;
+      } else {
+        const query = this.searchQuery.toLowerCase();
+        this.filteredSites = this.sites.filter(site => 
+          site.name.toLowerCase().includes(query) ||
+          site.type.toLowerCase().includes(query) ||
+          (site.type === 'hls' && '交通'.includes(query)) ||
+          (site.type === 'youtube' && '觀光'.includes(query))
+        );
+      }
+    },
+    clearSearch() {
+      this.searchQuery = '';
+      this.filteredSites = this.sites;
     }
   }
 };
@@ -162,6 +194,46 @@ export default {
 
 .side-menu.collapsed .toggle-icon {
   margin-left: 0;
+}
+
+.search-container {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 30px 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: #42b983;
+}
+
+.search-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #999;
+  font-size: 12px;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f5f5f5;
+}
+
+.search-clear:hover {
+  background: #e0e0e0;
 }
 
 .menu-items {

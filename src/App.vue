@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <h1>{{ message }}</h1>
-    hi there!
+    
     <div>
       <button v-if="false" @click="onTest">測試</button>
           <span v-if="fals">Clicked: {{ count }}</span>
@@ -30,7 +30,7 @@
 export default {
   data() {
     return {
-      message: 'Hello Vue 2!',
+      message: '即時影象Live',
       count: 0,
       // 新增欄位用於動態/懶載入組件
       testComponent: null,
