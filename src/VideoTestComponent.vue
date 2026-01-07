@@ -7,7 +7,11 @@
       allow="autoplay; encrypted-media"
     ></iframe>
 
-    <nav class="side-menu">
+    <nav
+      class="side-menu"
+      :class="{ collapsed: isMenuCollapsed }"
+>
+
       <h3 @click="toggleMenu" class="menu-toggle-header">
         <span v-show="!isMenuCollapsed">即時影像清單</span>
         <span class="toggle-icon">{{ isMenuCollapsed ? '▶' : '◀' }}</span>
